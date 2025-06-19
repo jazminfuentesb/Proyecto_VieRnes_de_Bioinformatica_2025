@@ -54,6 +54,6 @@ Jazmín Fuentes Becerril
 
 ## 8. Agradecimientos
 
-La realización de este proyecto y el análisis de datos presentado fue posible gracias a las habilidades y conocimientos adquiridos durante las valiosas sesiones de "**VieRnes de Bioinformática**". Este espacio ha sido fundamental para desarrollar una comprensión práctica y sólida en el manejo de R y su aplicación en la bioinformática, permitiendo la ejecución de este ejercicio de manera integral y eficiente.
+La realización de este proyecto y el análisis de datos presentado fue posible gracias a las habilidades y conocimientos adquiridos durante las valiosas sesiones de **VieRnes de Bioinformática en el LIIGH-UNAM (2025), específicamente en su edición 2025, parte 3**. Este programa ha sido fundamental para desarrollar una comprensión práctica y sólida en el manejo de R y su aplicación en la bioinformática, permitiendo la ejecución de este ejercicio de manera integral y eficiente.
 
-Un especial y sincero agradecimiento a la **Dra. Evelia Lorena Coss Navarrete**, cuyo liderazgo y visión son clave para impulsar cursos y programas como "VieRnes de Bioinformática", generando así nuevas y significativas oportunidades de aprendizaje en el campo de la bioinformática. Su compromiso es una inspiración para el desarrollo de futuras generaciones de profesionales.
+Un especial y sincero agradecimiento a la **Dra. Evelia Coss**, cuyo liderazgo y visión son clave para impulsar cursos y programas como "VieRnes de Bioinformática", generando así nuevas y significativas oportunidades de aprendizaje en el campo de la bioinformática. Su compromiso es una inspiración para el desarrollo de futuras generaciones de profesionales.
