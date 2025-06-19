@@ -35,9 +35,9 @@ Este repositorio contiene los siguientes archivos principales:
 * `plot_pregunta2_uptake_by_type.png`: Boxplot generado para la Pregunta 2.
 * `plot_pregunta3_barras_uptake_by_treatment_type.png`: Gráfico de barras de promedios para la Pregunta 3.
 * `plot_pregunta3_boxplot_uptake_by_treatment_type.png`: Boxplot con facetas para la Pregunta 3.
-* Video Explicativo: https://youtu.be/flGnvp1OLkM
 * R Markdown: https://rpubs.com/jazminfuentesb/1323613
 * Data Explorer Report: https://rpubs.com/jazminfuentesb/1323667
+* Video Explicativo: https://youtu.be/flGnvp1OLkM
 
 ## 5. Reporte Detallado de Exploración de Datos (`DataExplorer_Reporte.html`)
 
