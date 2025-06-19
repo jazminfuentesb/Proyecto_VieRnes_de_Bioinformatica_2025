@@ -30,29 +30,49 @@ Este repositorio contiene los siguientes archivos principales:
 
 * `Análisis-de-CO2-en-Plantas---Proyecto-de-VieRnes-de-Bioinformática.Rmd`: El código fuente en R Markdown del reporte.
 * `Análisis-de-CO2-en-Plantas---Proyecto-de-VieRnes-de-Bioinformática.html`: El reporte final compilado en formato HTML.
+* `reports/results/DataExplorer_Reporte.html`: Reporte detallado de exploración de datos generado por `DataExplorer` (ver sección 5).
 * `plot_pregunta1_conc_vs_uptake.png`: Gráfico de dispersión generado para la Pregunta 1.
 * `plot_pregunta2_uptake_by_type.png`: Boxplot generado para la Pregunta 2.
 * `plot_pregunta3_barras_uptake_by_treatment_type.png`: Gráfico de barras de promedios para la Pregunta 3.
 * `plot_pregunta3_boxplot_uptake_by_treatment_type.png`: Boxplot con facetas para la Pregunta 3.
 * Video Explicativo: .
 
-## 5. Requisitos (Paquetes de R)
+## 5. Reporte Detallado de Exploración de Datos (`DataExplorer_Reporte.html`)
 
-Para replicar este análisis, se requiere tener instaladas las siguientes librerías de R:
+Adicionalmente al análisis principal, este proyecto incluye un reporte HTML exhaustivo generado automáticamente por el paquete `DataExplorer`. Este reporte proporciona una visión rápida y completa del dataset `CO2`, abarcando:
+
+* **Estructura del Dataset:** Resumen de dimensiones y tipos de variables.
+* **Valores Faltantes:** Identificación y visualización de datos ausentes.
+* **Estadísticas Descriptivas:** Resúmenes numéricos para variables cuantitativas y frecuencias para categóricas.
+* **Análisis de Distribuciones:** Histogramas para variables numéricas y gráficos de barras para categóricas.
+* **Análisis de Relaciones:** Mapas de correlación entre variables numéricas y gráficos bivariados.
+
+Este reporte se encuentra ubicado en la ruta `reports/results/DataExplorer_Reporte.html` dentro de este repositorio y es un complemento valioso para la comprensión inicial del conjunto de datos.
+
+## 6. Generación del Reporte Principal
+
+El reporte principal de este proyecto, `Análisis-de-CO2-en-Plantas---Proyecto-de-VieRnes-de-Bioinformática.html`, se genera a partir del archivo fuente `Análisis-de-CO2-en-Plantas---Proyecto-de-VieRnes-de-Bioinformática.Rmd` utilizando R Markdown. Este proceso integra el código R, los resultados del análisis y el texto explicativo en un documento dinámico y reproducible. El estilo visual del reporte se define mediante el formato `rmdformats::downcute`.
+
+Para generar el reporte, se requiere tener R y el paquete `rmarkdown` instalados. El proceso se realiza en RStudio, presionando el botón "Knit" o ejecutando el comando `rmarkdown::render("Análisis-de-CO2-en-Plantas---Proyecto-de-VieRnes-de-Bioinformática.Rmd")` en la consola de R.
+
+## 7. Requisitos (Paquetes de R)
+
+Para replicar este análisis y generar los reportes, se requiere tener instaladas las siguientes librerías de R:
 
 * `ggplot2`
 * `dplyr`
-* `rmdformats` (para el formato del reporte)
+* `rmdformats` (para el formato del reporte principal)
+* `DataExplorer` (para el reporte detallado de exploración de datos)
 
-## 6. Autor
+## 8. Autor
 
 Jazmín Fuentes Becerril
 
-## 7. Fecha del Proyecto
+## 9. Fecha del Proyecto
 
 18 de junio de 2025
 
-## 8. Agradecimientos
+## 10. Agradecimientos
 
 La realización de este proyecto y el análisis de datos presentado fue posible gracias a las habilidades y conocimientos adquiridos durante las valiosas sesiones de **VieRnes de Bioinformática en el LIIGH-UNAM (2025), específicamente en su edición 2025, parte 3**. Este programa ha sido fundamental para desarrollar una comprensión práctica y sólida en el manejo de R y su aplicación en la bioinformática, permitiendo la ejecución de este ejercicio de manera integral y eficiente.
 
