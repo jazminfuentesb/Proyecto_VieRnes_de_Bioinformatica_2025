@@ -1,0 +1,257 @@
+---
+title: "Análisis de Absorción de CO2 en Plantas - Proyecto de Bioinformática"
+author: "Jazmín Fuentes Becerril"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::downcute:
+    
+    toc_depth: 3         # Profundidad de la Tabla de Contenidos (hasta h3)
+    number_sections: true # Numera automáticamente las secciones
+    lightbox: true     # Si quieres efecto lightbox en imágenes 
+    thumbnails: false   # Si quieres imágenes como miniaturas (opcional)
+    gallery: true      # Si quieres navegación en galería para lightbox (opcional)
+    use_bookdown: true   # Usa bookdown para numerar secciones y referencias cruzadas (recomendado con number_sections)
+    default_style: "light" # Estilo por defecto: "light" o "dark" (puedes probar "dark")
+    downcute_theme: "default" # Tema de downcute: "default" o "chaos" (prueba "chaos" para un look más oscuro)
+    style_switcher: true # Muestra un botón para cambiar entre estilos claro/oscuro
+    # highlight: null    # downcute maneja el resaltado con Prism.js, así que 'highlight' se ignora o se pone a null.
+    fig_width: 8         # Ancho por defecto de las figuras
+    fig_height: 6        # Alto por defecto de las figuras
+    fig_caption: true    # Muestra los subtítulos de las figuras (fig.cap)
+---
+
+```{r setup, include=FALSE}
+# Este chunk es para opciones globales de los chunks de R.
+# 'include=FALSE' significa que el código de este chunk no se muestra en el reporte final,
+# pero sí se ejecuta.
+knitr::opts_chunk$set(echo = TRUE,       # Muestra el código R en el reporte
+                       warning = FALSE,   # Suprime los mensajes de advertencia de R
+                       message = FALSE,   # Suprime los mensajes informativos de los paquetes
+                       fig.align = "center", # Centra todas las figuras en el reporte
+                       fig.width = 8,     # Ancho por defecto de las figuras
+                       fig.height = 6)    # Alto por defecto de las figuras
+
+# No necesitas rm(list = ls()) aquí, R Markdown ya limpia el entorno al "knit".
+```
+# Introducción
+
+Este documento presenta un análisis exploratorio del dataset `CO2`, un conjunto de datos clásico en R que contiene mediciones de la absorción de CO2 por plantas. El estudio examina el impacto de factores como la concentración de CO2 en el aire, el tipo de planta (Quebec o Mississippi) y un tratamiento de refrigeración en la tasa de absorción de CO2.
+
+## Objetivo del análisis
+
+El objetivo principal de este análisis es responder a las siguientes preguntas de investigación:
+
+1. ¿Cómo se relaciona la concentración de CO2 (`conc`) con la absorción de CO2 (`uptake`) en las plantas?
+
+2. ¿Existe una diferencia en la absorción promedio de CO2 (`uptake`) entre los diferentes tipos de plantas (`Type`)?
+
+3. ¿Cómo afecta el tratamiento de refrigeración (`Treatment`) la absorción de CO2 (`uptake`), y este efecto es diferente entre los tipos de plantas (`Type`)?
+
+# Metodología
+
+El análisis se realizará utilizando los datos de [`CO2`], que contiene variables como la concentración de CO2 (`conc`), la absorción de CO2 (`uptake`), el tipo de planta (`Type`) y el tratamiento de refrigeración (`Treatment`).
+
+## Configuración del Entorno y Carga de Datos
+Esta sección detalla la preparación del entorno de trabajo, incluyendo la carga de las librerías necesarias y la exploración inicial del dataset `CO2`.
+
+### Carga de Paquetes Necesarios
+Se cargan los paquetes `ggplot2` para la creación de gráficos y `dplyr` para la manipulación y transformación de datos. Se incluye una comprobación para instalar estos paquetes si no están disponibles en el sistema.
+```{r}
+# Programación defensiva: Verificar e instalar paquetes si no están presentes
+if (!requireNamespace("ggplot2", quietly = TRUE)) {
+  install.packages("ggplot2")
+}
+library(ggplot2)
+
+if (!requireNamespace("dplyr", quietly = TRUE)) {
+  install.packages("dplyr")
+}
+library(dplyr)
+
+# Para DataExplorer
+if (!requireNamespace("DataExplorer", quietly = TRUE)) {
+  install.packages("DataExplorer")
+}
+library(DataExplorer)
+```
+### Carga y Exploración Inicial del Dataset `CO2`
+El dataset `CO2` es un conjunto de datos precargado en R, que no requiere de importación desde un archivo externo. A continuación, se muestra una vista previa, la estructura y un resumen estadístico de sus variables para entender su composición.
+```{r}
+# Cargando el dataset (aunque ya esté en el ambiente, es buena práctica explicitarlo)
+data("CO2")
+
+cat("--- Vista Previa del Dataset ---\n")
+print(head(CO2))
+
+cat("\n--- Estructura del Dataset ---\n")
+str(CO2)
+
+cat("\n--- Resumen Estadístico del Dataset ---\n")
+summary(CO2)
+```
+### Exploración Rápida con `DataExplorer`
+Para una visión general rápida y estandarizada del dataset, se utiliza el paquete `DataExplorer`. Este paquete permite generar automáticamente visualizaciones y resúmenes de missing values, distribuciones de variables y correlaciones.
+```{r}
+# Visualización de valores perdidos
+plot_missing(CO2)
+
+# Histograma de variables numéricas
+plot_histogram(CO2)
+
+# Gráficos de barras de variables categóricas
+plot_bar(CO2)
+
+# Mapa de calor de correlaciones, DataExplorer lo hace fácil:
+# plot_correlation(CO2)
+```
+# Análisis y Resultados
+Esta sección aborda cada una de las preguntas de investigación planteadas, presentando el análisis estadístico realizado y las visualizaciones correspondientes que ayudan a interpretar los hallazgos.
+
+## Pregunta 1: Relación entre Concentración de CO2 y Absorción de CO2
+**Pregunta:** ¿Cómo se relaciona la concentración de CO2 (`conc`) con la absorción de CO2 (`uptake`) en las plantas?
+
+Para responder a esta pregunta, se calcula el coeficiente de correlación de Pearson para cuantificar la fuerza y dirección de la relación lineal entre `conc` y `uptake`. Adicionalmente, se genera un diagrama de dispersión para visualizar esta relación, diferenciando los puntos por el tipo de planta y el tratamiento recibido.
+
+```{r}
+# Análisis estadístico: Calcular la correlación entre conc y uptake
+# La correlación de Pearson mide la fuerza y dirección de una relación lineal.
+correlacion_conc_uptake <- cor(CO2$conc, CO2$uptake)
+cat("La correlación de Pearson entre Concentración de CO2 y Absorción de CO2 es:", round(correlacion_conc_uptake, 2), "\n")
+
+# Programación defensiva: Verificar si hay valores NA antes de calcular la correlación
+if (any(is.na(CO2$conc)) || any(is.na(CO2$uptake))) {
+  warning("¡Atención! Se encontraron valores NA en 'conc' o 'uptake'. La correlación se calculó excluyendo NA.")
+}
+
+# Visualización: Diagrama de dispersión con línea de tendencia
+plot_pregunta1 <- ggplot(CO2, aes(x = conc, y = uptake)) +
+  geom_point(aes(color = Type, shape = Treatment), alpha = 0.7) + # Puntos coloreados por 'Type' y forma por 'Treatment'
+  geom_smooth(method = "lm", se = FALSE, color = "blue", linetype = "dashed") + # Línea de tendencia lineal
+  labs(
+    title = "Relación entre Concentración de CO2 y Absorción de CO2",
+    x = "Concentración de CO2 (ppm)",
+    y = "Absorción de CO2 (umol/m^2s)", # Corregido a texto simple
+    caption = paste("Correlación de Pearson:", round(correlacion_conc_uptake, 2)),
+    color = "Tipo de Planta",
+    shape = "Tratamiento"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+print(plot_pregunta1)
+```
+
+**Interpretación:**
+Existe una **correlación positiva y moderada** entre la concentración de CO2 y la absorción de CO2 por las plantas, con un coeficiente de correlación de Pearson de `r round(correlacion_conc_uptake, 2)`. Esto indica que a medida que aumenta la concentración de CO2, tiende a aumentar la absorción, aunque la relación no es perfectamente lineal y otros factores claramente influyen. La visualización muestra que las plantas de tipo Quebec generalmente presentan una mayor absorción que las de Mississippi, y que el tratamiento también parece modular esta relación.
+
+## Pregunta 2: Diferencia en Absorción por Tipo de Planta
+**Pregunta:** ¿Existe una diferencia en la absorción promedio de CO2 (`uptake`) entre los diferentes tipos de plantas (`Type`)?
+
+Para evaluar si hay diferencias significativas en la absorción de CO2 entre los tipos de plantas (Quebec y Mississippi), se calculan los promedios y desviaciones estándar de `uptake` para cada tipo. Posteriormente, se utiliza un diagrama de cajas (boxplot) para visualizar las distribuciones de absorción y comparar sus medianas y rangos, incluyendo también la media para una referencia adicional.
+
+```{r}
+# Análisis estadístico: Calcular el promedio de 'uptake' por 'Type'
+promedio_uptake_por_tipo <- CO2 %>%
+  group_by(Type) %>%
+  summarise(
+    media_uptake = mean(uptake, na.rm = TRUE),
+    desviacion_estandar_uptake = sd(uptake, na.rm = TRUE),
+    conteo = n()
+  )
+cat("\n--- Absorción Promedio de CO2 por Tipo de Planta ---\n")
+print(promedio_uptake_por_tipo)
+
+# Programación defensiva: Verificar si 'Type' es un factor
+if (!is.factor(CO2$Type)) {
+  CO2$Type <- as.factor(CO2$Type)
+  message("La variable 'Type' fue convertida a factor para un mejor análisis categórico.")
+}
+
+# Visualización: Diagrama de cajas (Boxplot) para comparar la distribución de uptake por Type
+plot_pregunta2 <- ggplot(CO2, aes(x = Type, y = uptake, fill = Type)) +
+  geom_boxplot() + # Diagrama de cajas para mostrar distribución y mediana
+  labs(
+    title = "Absorción de CO2 por Tipo de Planta",
+    x = "Tipo de Planta",
+    y = "Absorción de CO2 (umol/m^2s)", # Corregido a texto simple
+    fill = "Tipo de Planta"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+print(plot_pregunta2)
+```
+**Interpretación:**
+Existe una clara y significativa diferencia en la absorción de CO2 entre los tipos de plantas. Las plantas de tipo **Quebec** (`r round(promedio_uptake_por_tipo$media_uptake[promedio_uptake_por_tipo$Type == "Quebec"], 2)`) µmol/m²·s en promedio muestran una absorción de CO2 notablemente mayor y más consistente que las plantas de tipo **Mississippi** (`r round(promedio_uptake_por_tipo$media_uptake[promedio_uptake_por_tipo$Type == "Mississippi"], 2)`) µmol/m²·s en promedio. El boxplot resalta que la distribución de absorción para Quebec se encuentra en un rango considerablemente superior, con poca superposición entre las dos distribuciones.
+
+## Pregunta 3: Efecto del Tratamiento y Tipo de Planta en la Absorción de CO2
+**Pregunta:** ¿Cómo afecta el tratamiento de refrigeración (`Treatment`) la absorción de CO2 (`uptake`), y este efecto es diferente entre los tipos de plantas (`Type`)?
+
+Para explorar la interacción entre el tratamiento de refrigeración y el tipo de planta en la absorción de CO2, se calculan los promedios de `uptake` para cada combinación de tipo y tratamiento. Se presentan dos visualizaciones complementarias: un gráfico de barras que muestra los promedios y un conjunto de boxplots con facetas para ilustrar las distribuciones detalladas bajo cada condición.
+```{r}
+# Análisis estadístico: Calcular promedios de 'uptake' por 'Treatment' y 'Type'
+promedio_uptake_por_tratamiento_y_tipo <- CO2 %>%
+  group_by(Type, Treatment) %>%
+  summarise(
+    media_uptake = mean(uptake, na.rm = TRUE),
+    .groups = 'drop'
+  )
+cat("\n--- Absorción Promedio de CO2 por Tratamiento y Tipo de Planta ---\n")
+print(promedio_uptake_por_tratamiento_y_tipo)
+
+# Programación defensiva: Verificar si 'Treatment' es un factor
+if (!is.factor(CO2$Treatment)) {
+  CO2$Treatment <- as.factor(CO2$Treatment)
+  message("La variable 'Treatment' fue convertida a factor para un mejor análisis categórico.")
+}
+
+# Visualización Opción 1: Diagrama de barras de promedios
+plot_pregunta3_barras <- ggplot(promedio_uptake_por_tratamiento_y_tipo,
+                               aes(x = paste(Type, Treatment, sep = "\n"), y = media_uptake, fill = Type)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(
+    title = "Absorción Promedio de CO2 por Tipo de Planta y Tratamiento",
+    x = "Tipo de Planta y Tratamiento",
+    y = "Absorción Promedio de CO2 (umol/m^2s)", # Corregido a texto simple
+    fill = "Tipo de Planta"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+print(plot_pregunta3_barras)
+
+
+# Visualización Opción 2: Diagrama de cajas/violín con facetas
+plot_pregunta3_boxplot <- ggplot(CO2, aes(x = Treatment, y = uptake, fill = Treatment)) +
+  geom_boxplot() +
+  facet_wrap(~ Type) + # Separa el gráfico por cada 'Type' de planta
+  labs(
+    title = "Distribución de Absorción de CO2 por Tratamiento y Tipo de Planta",
+    x = "Tratamiento",
+    y = "Absorción de CO2 (umol/m^2s)", # Corregido a texto simple
+    fill = "Tratamiento"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+print(plot_pregunta3_boxplot)
+```
+**Interpretación:**
+Los gráficos demuestran que el tratamiento de refrigeración (`chilled`) tiene un **efecto negativo** en la absorción de CO2 para ambos tipos de plantas, resultando en una menor absorción en comparación con el tratamiento `nonchilled`. Sin embargo, se observa una **interacción importante**, donde el efecto perjudicial de la refrigeración es considerablemente más severo en las plantas Mississippi. Mientras que en las plantas Quebec la diferencia entre tratamientos es notable pero no drástica, en las Mississippi el tratamiento refrigerado reduce drásticamente la absorción a los niveles más bajos del estudio. Esto indica una interacción clara: la vulnerabilidad a la refrigeración difiere significativamente entre los tipos de plantas. Las plantas Quebec, incluso bajo refrigeración, mantienen niveles de absorción que superan a las plantas Mississippi no refrigeradas.
+
+# Conclusiones
+Este análisis del dataset `CO2` ha revelado información crucial sobre los factores que influyen en la absorción de CO2 por las plantas:
+
+1. **Correlación entre concentración de CO2 y absorción:**
+   Existe una **correlación positiva y moderada** entre la concentración de CO2 y la absorción, lo que sugiere que una mayor disponibilidad de CO2 permite a las plantas aumentar su tasa de absorción. Sin embargo, esta relación está modulada por otros factores que podrían estar influyendo en la tasa de absorción, como el tipo de planta o las condiciones ambientales.
+
+2. **Influencia del tipo de planta:**
+   El tipo de planta es el **factor más influyente** en la absorción de CO2. Las plantas de tipo **Quebec** demuestran consistentemente una capacidad de absorción significativamente mayor que las plantas de tipo **Mississippi** en todas las condiciones estudiadas, lo que resalta las diferencias inherentes entre los dos tipos de plantas.
+
+3. **Impacto del tratamiento de refrigeración:**
+   El tratamiento de **refrigeración** (`chilled`) tiene un **impacto negativo** en la absorción de CO2 para ambos tipos de plantas. Sin embargo, se observa una **interacción importante**: el efecto perjudicial de la refrigeración es considerablemente más severo en las plantas Mississippi, indicando una **menor tolerancia a bajas temperaturas** en comparación con las plantas Quebec.
+   
+En resumen, la eficiencia en la absorción de CO2 en este estudio está fuertemente determinada por la genética de la planta (tipo) y es susceptible a condiciones ambientales adversas como la refrigeración, especialmente en genotipos más sensibles como los de Mississippi.
+
+# Agradecimientos
+La realización de este proyecto y el análisis de datos presentado fue posible gracias a las habilidades y conocimientos adquiridos durante las sesiones de "**VieRnes de Bioinformática**". Este espacio ha sido fundamental para desarrollar una comprensión práctica y sólida en el manejo de R y su aplicación en la bioinformática, permitiendo la ejecución de este ejercicio de manera integral y eficiente.
