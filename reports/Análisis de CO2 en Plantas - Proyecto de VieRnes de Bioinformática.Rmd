@@ -100,9 +100,6 @@ plot_histogram(CO2)
 
 # Gráficos de barras de variables categóricas
 plot_bar(CO2)
-
-# Mapa de calor de correlaciones, DataExplorer lo hace fácil:
-# plot_correlation(CO2)
 ```
 # Análisis y Resultados
 Esta sección aborda cada una de las preguntas de investigación planteadas, presentando el análisis estadístico realizado y las visualizaciones correspondientes que ayudan a interpretar los hallazgos.
