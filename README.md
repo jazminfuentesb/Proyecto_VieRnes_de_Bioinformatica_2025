@@ -34,8 +34,7 @@ Este repositorio contiene los siguientes archivos principales:
 * `plot_pregunta2_uptake_by_type.png`: Boxplot generado para la Pregunta 2.
 * `plot_pregunta3_barras_uptake_by_treatment_type.png`: Gráfico de barras de promedios para la Pregunta 3.
 * `plot_pregunta3_boxplot_uptake_by_treatment_type.png`: Boxplot con facetas para la Pregunta 3.
-* **(Próximamente) Presentación del Proyecto:** (Si usas Xaringan u otro, el archivo `.Rmd` de la presentación y su HTML/PDF).
-* **(Próximamente) Video Explicativo:** (El archivo de video de tu presentación).
+* Video Explicativo: .
 
 ## 5. Requisitos (Paquetes de R)
 
@@ -52,3 +51,9 @@ Jazmín Fuentes Becerril
 ## 7. Fecha del Proyecto
 
 18 de junio de 2025
+
+## 8. Agradecimientos
+
+La realización de este proyecto y el análisis de datos presentado fue posible gracias a las habilidades y conocimientos adquiridos durante las valiosas sesiones de "**VieRnes de Bioinformática**". Este espacio ha sido fundamental para desarrollar una comprensión práctica y sólida en el manejo de R y su aplicación en la bioinformática, permitiendo la ejecución de este ejercicio de manera integral y eficiente.
+
+Un especial y sincero agradecimiento a la **Dra. Evelia Lorena Coss Navarrete**, cuyo liderazgo y visión son clave para impulsar cursos y programas como "VieRnes de Bioinformática", generando así nuevas y significativas oportunidades de aprendizaje en el campo de la bioinformática. Su compromiso es una inspiración para el desarrollo de futuras generaciones de profesionales.
